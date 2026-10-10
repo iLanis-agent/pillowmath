@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pillow math - calculators</title>
+<style>
+  :root { --accent: #5c4033; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: #f8f5f1; color: #26211d; line-height: 1.55; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; color: var(--accent); }
+  .lede { margin: 0 0 28px; max-width: 640px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  section { background: #fff; border: 1px solid #e2dbd2; border-radius: 8px; padding: 20px 22px; }
+  h2 { font-size: 1.15rem; margin: 0 0 6px; }
+  .hint { font-size: 0.9rem; color: #71665c; margin: 0 0 14px; }
+  label { display: block; font-size: 0.9rem; margin: 10px 0 3px; }
+  input { width: 100%; padding: 8px 10px; font-size: 1rem; border: 1px solid #cfc3b8; border-radius: 5px; font-family: inherit; }
+  button { margin-top: 16px; width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; font-size: 1rem; cursor: pointer; font-family: inherit; }
+  button:hover { filter: brightness(1.12); }
+  .out { margin-top: 14px; font-size: 1rem; min-height: 1.4em; }
+  .out.err { color: #a32222; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; font-size: 0.85rem; color: #8b8177; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Pillow math</h1>
+  <p class="lede">Which insert, how much fill, and what to cut. Exact arithmetic, every borrowed number labeled.</p>
+  <div class="grid">
+    <section>
+      <h2>Insert pick</h2>
+      <p class="hint">Cover size becomes the insert to buy.</p>
+      <label for="i-c">Cover size (cm)</label>
+      <input id="i-c" type="number" value="45" min="0" step="1">
+      <button id="i-go">Pick the insert</button>
+      <div class="out" id="i-out"></div>
+    </section>
+    <section>
+      <h2>Fill plan</h2>
+      <p class="hint">Side and loft become liters and grams.</p>
+      <label for="f-s">Pillow side (cm)</label>
+      <input id="f-s" type="number" value="45" min="0" step="1">
+      <label for="f-l">Loft (cm)</label>
+      <input id="f-l" type="number" value="15" min="0" step="1">
+      <button id="f-go">Weigh the fill</button>
+      <div class="out" id="f-out"></div>
+    </section>
+    <section>
+      <h2>Cut list</h2>
+      <p class="hint">Cover size becomes the pieces to cut.</p>
+      <label for="c-c">Cover size (cm)</label>
+      <input id="c-c" type="number" value="45" min="0" step="1">
+      <button id="c-go">Cut the cover</button>
+      <div class="out" id="c-out"></div>
+    </section>
+  </div>
+</main>
+<footer>Built by the app factory. <a href="index.html">About</a> &middot; <a href="https://github.com/iLanis-agent/pillowmath">Source</a></footer>
+<script src="engine.js"></script>
+<script>
+function num(id){ return parseFloat(document.getElementById(id).value); }
+function show(id, r, render){
+  var el = document.getElementById(id);
+  if (r.error) { el.textContent = r.error; el.classList.add('err'); }
+  else { el.textContent = render(r); el.classList.remove('err'); }
+}
+document.getElementById('i-go').addEventListener('click', function(){
+  show('i-out', PillowMath.insertPlan(num('i-c')), PillowMath.renderInsert);
+});
+document.getElementById('f-go').addEventListener('click', function(){
+  show('f-out', PillowMath.fillPlan(num('f-s'),num('f-l')), PillowMath.renderFill);
+});
+document.getElementById('c-go').addEventListener('click', function(){
+  show('c-out', PillowMath.cutPlan(num('c-c')), PillowMath.renderCut);
+});
+</script>
+</body>
+</html>
